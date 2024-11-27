@@ -1,62 +1,123 @@
-
 import streamlit as st 
 import st_function as sf
 import re 
 import time 
+from PIL import Image
+import io
 
-#Check if Image Url is valid or not 
+
+# Function to check if the image URL is valid or not
 def Check_url(url):
     url_pattern = r"https?://\S+"
     return re.match(url_pattern, url) is not None
 
-#Filter Box 
-container = st.container()
-my_expander1 = st.expander("Filter", expanded=True)
-with my_expander1:
-    cols = st.columns(3)
-    cols[0].caption("Search options ")
-    show_result = cols[1].slider("Show results", 1, 15)
-    filter = cols[2].selectbox("Filter", ("Image", "Text"))
+import streamlit as st
 
-# if you want to search by Text 
+# Custom CSS for horizontal radio buttons styled like a slider
+st.markdown("""
+    <style>
+    .radio-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #492D30;
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
 
+    .radio-container label {
+        margin: 0 20px;
+        font-size: 16px;
+        color: white;
+    }
+
+    .stRadio > div {
+        flex-direction: row; /* Make the radio buttons horizontal */
+    }
+
+    .stRadio div[role='radiogroup'] {
+        justify-content: space-around; /* Add spacing between options */
+    }
+     .stColumns {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+    .stColumn {
+        flex: 1;
+        margin-right: 10px;
+    }
+    .stColumn:last-child {
+        margin-right: 0;
+    }
+
+    /* Style the spinner */
+    .stSpinner {
+        color: #00aaff;  /* Spinner color */
+    }
+
+    /* Style images to have rounded corners and shadow */
+    img {
+        border-radius: 10px;
+        box-shadow: 0px 8px 10px rgba(0, 0, 0, 0.2);
+        margin-bottom: 10px;
+        max-width: 100%;
+        height: auto;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# Filter Box
+# Sidebar for filter options
+st.sidebar.markdown("<h6>🔍 Search Options</h6>", unsafe_allow_html=True)
+
+# Slider for showing results
+show_result = st.sidebar.slider("Show results", 1, 15, value=5, format="%d")  
+
+# Radio buttons for filter selection
+filter = st.sidebar.radio("Choose Filter", ("Image", "Text"), index=0)
+
+# Use the selected filter in your main application logic
+if filter == "Text":
+    # Your code for handling text search
+    st.write("You selected Text search.")
+    # Add your existing logic for text search here
+
+elif filter == "Image":
+    # Your code for handling image search
+    st.write("You selected Image search.")
+    # Add your existing logic for image search here
+# Show the selected filter
+st.write(f"Selected filter: {filter}")
+
+# Search by Text
 if filter == "Text":
     with st.form("my_form"):
-        cols = st.columns([3, 1])
-        query = cols[0].text_input("How can we help you?")
-        search_type = cols[1].selectbox("search type", ("fuzzy", "match"))
-        submit = st.form_submit_button("Search")
+        cols = st.columns([3,1])
+        query = cols[0].text_input("💬 How can we help you?", "", placeholder="Type your query here...")  # Icon added
+        search_type = cols[1].selectbox("Search type", ("fuzzy", "match"))
+        submit = st.form_submit_button("🔍 Search")
         
         if submit:
-            if not query:  
-                st.error("Oops 😕! Please enter your search.")  # Changed the error message to include emoji and text
+            if not query:
+                st.error("❌ Oops 😕! Please enter your search.")  # Error message with emoji
             else:
                 start_time = time.time()
-                sf.search_by_text(query, search_type, show_result) 
+                sf.search_by_text(query, search_type, show_result, cols)
                 end_time = time.time()
                 duration_time = end_time - start_time
                 duration_time_str = "{:.3f}".format(duration_time)
-                st.toast("Time taken: {} seconds".format(duration_time_str))
+                st.success(f"✅ Time taken: {duration_time_str} seconds")  # Success message with icon
 
-
-# if you want to search by Image
-
+# Search by Image
 if filter == "Image":
     with st.form("my_form_image"):
-        st.write("Please choose one of the following options to search:")
-        #Search Images by Url
-        # url = st.text_input("Search by image URL")
-        #Search Images by browse an image
-        uploaded_file = st.file_uploader("Upload a file", type=["png", "jpg"])
-        submit = st.form_submit_button("Search")
+        st.write("📸 Please choose one of the following options to search:")  # Icon added
+        uploaded_file = st.file_uploader("Upload a file", type=["png", "jpg"], help="Upload an image for search")
+        submit = st.form_submit_button("🔍 Search")
+        
         if submit:
-            # if Check_url(url):
-            #     start_time = time.time()
-            #     sf.search_by_url(url, show_result)
-            #     end_time = time.time()
-            #     duration_time = end_time - start_time
-            #     duration_time_str = "{:.3f}".format(duration_time)
-            #     st.toast("Time taken: {} seconds".format(duration_time_str))
             if uploaded_file:
                 uploaded = uploaded_file.read()
                 start_time = time.time()
@@ -64,36 +125,12 @@ if filter == "Image":
                 end_time = time.time()
                 duration_time = end_time - start_time
                 duration_time_str = "{:.3f}".format(duration_time)
-                st.toast("Time taken: {} seconds".format(duration_time_str))
+                st.success(f"✅ Time taken: {duration_time_str} seconds")
             else:
-                st.warning("Please provide an image")
+                st.warning("⚠️ Please provide an image")
 
-        
-            
-# if you want to search by Booth images and Text area 
 
-# if filter == "Text & Image":
-#     with st.form("my_form_both"):
-#         cols = st.columns([2, 2])
-#         query = cols[0].text_input("Filter by text")
-#         search_type = cols[1].selectbox("search type", ("fuzzy", "multi_match", "match"))
-#         with cols[0]:
-#             st.write("Provide URL or Browse Image")
-#             url = st.text_input("Search by URL : ")
-#         uploaded_file = cols[1].file_uploader("Upload a file", type=["png", "jpg", "jpeg"])
-#         submit = st.form_submit_button("Search")
-#         if submit:
-#             if Check_url(url) or uploaded_file:
-#                 start_time = time.time()
-#                 sf.search_by_image_and_text(
-#                     uploaded=uploaded_file.read(),
-#                     query=query,
-#                     search_type=search_type,
-#                     show_result=show_result,
-#                 )
-#                 end_time = time.time()
-#                 elapsed_time = end_time - start_time
-#                 elapsed_time_str = "{:.3f}".format(elapsed_time)
-#                 st.toast("Time taken: {} seconds".format(elapsed_time_str))
-#             else:
-#                 st.warning("Please provide an image")
+sentiment_mapping = ["one", "two", "three", "four", "five"]
+selected = st.feedback("stars")
+if selected is not None:
+    st.markdown(f"You selected {sentiment_mapping[selected]} star(s).")

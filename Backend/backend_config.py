@@ -1,10 +1,8 @@
-index_name = "images"
-index="allimages"
+index="images"
 index_text="flickrphotos"
 elastic_url="http://localhost:9200"
 elastic_usr="elastic"
 elastic_pass="elastic"
-datasetPath = "../infra/data/mirflickr25k/mirflickr"
-dataPath= "../infra/data/thumbnails"
-csvPath = "dataset/photo_metadata.csv"
+dataPath= "D:\\Nour Mabrouk Bacem Ahmed\\images"
+csvPath = "D:\\Nour Mabrouk Bacem Ahmed\\photo_metadata.csv"
 threshold = 0.2
