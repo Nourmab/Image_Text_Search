@@ -146,7 +146,7 @@ threshold=0.7
 ### Global Interface Description
 The interface of the image search engine is designed to be user-friendly and intuitive. It features a clean layout where users can easily access both the text and image search functionalities. Users can quickly navigate through the results, making the search experience efficient and enjoyable. The interface also allows for easy uploads of images for content-based searches, enhancing the overall usability of the application.
 
-![Result](images/interface.png)
+![Result](Images/interface.PNG)
 
 ### 🔍 Search Features
 
