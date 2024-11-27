@@ -155,7 +155,7 @@ The interface of the image search engine is designed to be user-friendly and int
 - The search is performed against both indexed image metadata and textual descriptions.
 - Results display relevant images alongside their corresponding metadata.
 
-![Text](images/text.PNG)
+![Text](Images/text.PNG)
 #### Search by Image
 - Users can upload an image to perform a content-based search.
 - The engine utilizes VGG16 to extract features from the uploaded image.
